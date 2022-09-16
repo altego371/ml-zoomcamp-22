@@ -26,7 +26,8 @@ def q2():
 def q3():
     """Who are the most frequent car manufacturers (top-3) according to the dataset?"""
     df = pd.read_csv('data.csv')
-    return df.groupby('Make').size().sort_values(ascending=False).index.tolist()[:3]
+    # return df.groupby('Make').size().sort_values(ascending=False).index.tolist()[:3]
+    return df['Make'].value_counts().head(3).index.tolist()
 
 
 def q4():
@@ -38,7 +39,9 @@ def q4():
 def q5():
     """How many columns in the dataset have missing values?"""
     df = pd.read_csv('data.csv')
-    return sum(df.isnull().any())
+    # return sum(df.isnull().any())
+    # return df.isnull().any().sum()
+    return (df.isnull().sum() != 0).sum()
 
 
 def q6():
@@ -71,11 +74,14 @@ def q7():
     """
     df = pd.read_csv('data.csv')
     X = df[df['Make'] == 'Lotus'][['Engine HP', 'Engine Cylinders']].drop_duplicates()
-    XTX = X.T.dot(X)
-    XTX_inv = pd.DataFrame(np.linalg.pinv(XTX.values), XTX.columns, XTX.index)
+    # XTX = X.T.dot(X)
+    XTX = X.T @ X
+    # XTX_inv = pd.DataFrame(np.linalg.pinv(XTX.values), XTX.columns, XTX.index)
+    XTX_inv = np.linalg.inv(XTX)
     XTX_inv.dot(XTX)  # check XTX_inv
     y = pd.array([1100, 800, 750, 850, 1300, 1000, 1000, 1300, 800])
-    w = XTX_inv.dot(X.T).dot(y)
+    # w = XTX_inv.dot(X.T).dot(y)
+    w = (XTX_inv @ X.T) @ y
     return w.tolist()[0]
 
 
